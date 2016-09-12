@@ -1114,17 +1114,15 @@ class ldap extends DS {
 		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
 			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
 
-        return $dn;
-
 		if (is_array($dn)) {
 			$a = array();
 			foreach ($dn as $key => $rdn) {
-				$a[$key] = preg_replace_callback('/\\\([0-9A-Fa-f]{2})/', function($m) { return "''.chr(hexdec('${m[1]}')).''"; }, $rdn);
+				$a[$key] = preg_replace('/\\\([0-9A-Fa-f]{2})/e',"''.chr(hexdec('\\1')).''",$rdn);
 			}
 			return $a;
 
 		} else {
-			return preg_replace_callback('/\\\([0-9A-Fa-f]{2})/', function($m) { return "''.chr(hexdec('${m[1]}')).''"; }, $dn);
+			return preg_replace('/\\\([0-9A-Fa-f]{2})/e',"''.chr(hexdec('\\1')).''",$dn);
 		}
 	}
 

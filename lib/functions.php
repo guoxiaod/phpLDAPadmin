@@ -2561,28 +2561,16 @@ function dn_unescape($dn) {
 	if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
 		debug_log('Entered (%%)',1,0,__FILE__,__LINE__,__METHOD__,$fargs);
 
-    return $dn;
-
 	if (is_array($dn)) {
 		$a = array();
 
 		foreach ($dn as $key => $rdn)
-			$a[$key] = preg_replace_callback('/\\\([0-9A-Fa-f]{2})/',
-				function ($r) {
-					return "''.chr(hexdec('$r[1]')).''";
-				},
-				$rdn
-			);
+            $a[$key] = preg_replace('/\\\([0-9A-Fa-f]{2})/e',"''.chr(hexdec('\\1')).''",$rdn);
 
 		return $a;
 
 	} else {
-		return preg_replace_callback('/\\\([0-9A-Fa-f]{2})/',
-			function ($r) {
-				return "''.chr(hexdec('$r[1]')).''";
-			},
-			$dn
-		);
+		return preg_replace('/\\\([0-9A-Fa-f]{2})/e',"''.chr(hexdec('\\1')).''",$dn);
 	}
 }
 
@@ -2616,7 +2604,12 @@ function get_href($type,$extra_info='') {
 		case 'forum':
 			return sprintf('%s/mailarchive/forum.php?forum_name=%s',$sf,$forum_id);
 		case 'logo':
-			return isset($_SESSION) && ! $_SESSION[APPCONFIG]->getValue('appearance','remoteurls') ? '' : sprintf('//sflogo.sourceforge.net/sflogo.php?group_id=%s&amp;type=10',$group_id);
+			if (! isset($_SERVER['HTTPS']) || strtolower($_SERVER['HTTPS']) != 'on')
+				$proto = 'http';
+			else
+				$proto = 'https';
+
+			return isset($_SESSION) && ! $_SESSION[APPCONFIG]->getValue('appearance','remoteurls') ? '' : sprintf('%s://sflogo.sourceforge.net/sflogo.php?group_id=%s&amp;type=10',$proto,$group_id);
 		case 'sf':
 			return sprintf('%s/projects/phpldapadmin',$sf);
 		case 'web':
