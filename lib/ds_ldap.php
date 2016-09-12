@@ -1114,6 +1114,8 @@ class ldap extends DS {
 		if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
 			debug_log('Entered (%%)',17,0,__FILE__,__LINE__,__METHOD__,$fargs);
 
+        return $dn;
+
 		if (is_array($dn)) {
 			$a = array();
 			foreach ($dn as $key => $rdn) {

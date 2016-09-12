@@ -2561,6 +2561,8 @@ function dn_unescape($dn) {
 	if (DEBUG_ENABLED && (($fargs=func_get_args())||$fargs='NOARGS'))
 		debug_log('Entered (%%)',1,0,__FILE__,__LINE__,__METHOD__,$fargs);
 
+    return $dn;
+
 	if (is_array($dn)) {
 		$a = array();
 
